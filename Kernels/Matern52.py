@@ -104,3 +104,4 @@ class Matern52(Kernel):
                   (1e-3, upperBoundStd)
                   ]
         return bounds
+

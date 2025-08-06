@@ -1,0 +1,143 @@
+--- ./FGPGM.py	(original)
++++ ./FGPGM.py	(refactored)
+@@ -242,7 +242,7 @@
+                     xmin[i] = newZeros[i]
+                     blockCount += 1
+             if debug:
+-                print("FGPGM blocked {} potentially negative states".format(blockCount))
++                print(("FGPGM blocked {} potentially negative states".format(blockCount)))
+ 
+         bounds = [(low, high) for low, high in zip(xmin, xmax)]
+ 
+@@ -253,9 +253,9 @@
+                 x0[i] = bounds[i][0] + bounds[i][1]*1e-5
+                 initCorrCount += 1
+             if x0[i] > bounds[i][1]:
+-                print("x0[{}] too big".format(i))
+-        
+-        print("{} states needed correction, as they were too close to zero".format(initCorrCount))
++                print(("x0[{}] too big".format(i)))
++        
++        print(("{} states needed correction, as they were too close to zero".format(initCorrCount)))
+ 
+         if propStds is None:
+             print("using standard proposal stds")
+@@ -285,13 +285,13 @@
+         paramRejected = nRejected[-self.nODEParams:]
+         stateRatio = stateAccepted / (stateRejected + stateAccepted)
+         paramRatio = paramAccepted / (paramRejected + paramAccepted)
+-        print("\nstate acceptance mean with std: \n{} +- {}".format(
+-            np.mean(stateRatio), np.std(stateRatio)))
+-        print("\nstate acceptance range: \n{} to {}".format(
+-            np.min(stateRatio), np.max(stateRatio)))
+-        print("\nparam acceptance mean with std: \n{} +- {}".format(
+-            np.mean(paramRatio), np.std(paramRatio)))
+-        print("\nparam acceptance range: \n{} to {}".format(
+-            np.min(paramRatio), np.max(paramRatio)))
++        print(("\nstate acceptance mean with std: \n{} +- {}".format(
++            np.mean(stateRatio), np.std(stateRatio))))
++        print(("\nstate acceptance range: \n{} to {}".format(
++            np.min(stateRatio), np.max(stateRatio))))
++        print(("\nparam acceptance mean with std: \n{} +- {}".format(
++            np.mean(paramRatio), np.std(paramRatio))))
++        print(("\nparam acceptance range: \n{} to {}".format(
++            np.min(paramRatio), np.max(paramRatio))))
+ 
+         return newStates, newParams
+--- ./Kernel.py	(original)
++++ ./Kernel.py	(refactored)
+@@ -191,9 +191,9 @@
+             sigma0 = 1e-3
+         def printAcceptance(x, f, accept):
+             if accept:
+-                print("YES: {} @ {}".format(f, x))
++                print(("YES: {} @ {}".format(f, x)))
+             else:
+-                print("Nope: {} @ {}".format(f, x))
++                print(("Nope: {} @ {}".format(f, x)))
+         
+         if not anneal:            
+             minimum = basinhopping(negLogLikelihood, x0, T=T,
+@@ -216,9 +216,9 @@
+                 )
+             minimum = minimums[-1]
+             for i in np.arange(len(minimums)):
+-                print(minimums[i].x)
++                print((minimums[i].x))
+         print("Kernel optimization output: ")
+-        print minimum
++        print(minimum)
+         print("\n")
+         optVector = minimum.x
+         self.theta = optVector[:-1]
+@@ -226,7 +226,7 @@
+         # check for positive semidefinite
+         C = self.getCPhi(time)
+         minEigenvalue = np.min(np.linalg.eig(C)[0])
+-        print("minimum eigenvalue = {}".format(minEigenvalue))
++        print(("minimum eigenvalue = {}".format(minEigenvalue)))
+         if (minEigenvalue < 1e-5):
+             print("\n\nRECOMMENDATION: USE BIGGER NUGGET\n\n")
+         C = C + (self.sigma**2)*np.eye(C.shape[0])
+@@ -328,13 +328,13 @@
+             raise TypeError(
+                 "theta is currently None. Please initialize with appropriate values")
+         if verbose:
+-            print("current theta: {}".format(self.theta))
++            print(("current theta: {}".format(self.theta)))
+         if self.sigma is None:
+             raise TypeError(
+                 "sigma is currently None. Please initialize with appropriate value.")
+         if verbose:
+-            print("current sigma: {}".format(self.sigma))
+-            print("current nugget: {}".format(self.nugget))
++            print(("current sigma: {}".format(self.sigma)))
++            print(("current nugget: {}".format(self.nugget)))
+ 
+         "check for symmetry"
+         if verbose:
+@@ -343,7 +343,7 @@
+             times = np.abs(3*(np.random.randn(2)))
+             if not np.allclose(self.k(times[0], times[1]), 
+                                self.k(times[1], times[0])):
+-                raise StandardError(
++                raise Exception(
+                     "kernel function is not symmetfic for times {}, {}".format(
+                         times[0], times[1]))
+         if verbose:
+@@ -352,7 +352,7 @@
+         "Numerical derivative check"
+         if verbose:
+             print("\nStart derivative testing")
+-            print("spacing: {}".format(dt))
++            print(("spacing: {}".format(dt)))
+ 
+         def getNumCDash(time1, time2):
+             def func(t2):
+@@ -375,7 +375,7 @@
+             kernelCDash = self.CDash(times[0], times[1])
+             numCDash = getNumCDash(times[0], times[1])
+             if not np.allclose(kernelCDash, numCDash, rtol=tol):
+-                raise StandardError(
++                raise Exception(
+                     "implemented CDash does not agree with numerical test for" + 
+                     " times\n{}, {}\nwith values\n{} != {}".format(
+                         times[0], times[1], kernelCDash, numCDash)
+@@ -384,7 +384,7 @@
+             kernelDashC = self.DashC(times[0], times[1])
+             numDashC = getNumDashC(times[0], times[1])
+             if not np.allclose(kernelDashC, numDashC, rtol=tol):
+-                raise StandardError(
++                raise Exception(
+                     "implemented DashC does not agree with numerical test for" +
+                     " times\n{}, {}\nwith values\n{} != {}".format(
+                         times[0], times[1], kernelDashC, numDashC)
+@@ -393,7 +393,7 @@
+             kernelCDD = self.CDoubleDash(times[0], times[1])
+             numCDD = getNumCDD(times[0], times[1])
+             if not np.allclose(kernelCDD, numCDD, rtol=tol):
+-                raise StandardError(
++                raise Exception(
+                     "implemented CDoubleDash does not agree with numerical" +
+                     " test for times\n{}, {}\n with values {} != {}".format(
+                         times[0], times[1], kernelCDD, numCDD)

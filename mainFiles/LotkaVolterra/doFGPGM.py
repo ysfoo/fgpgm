@@ -6,12 +6,12 @@ this script can be run to infer the ODE parameters using FGPGM.
 """
 import numpy as np
 
-from FGPGM.Experiments.LotkaVolterra import LotkaVolterra as exp
-from FGPGM.Kernels.RBF import RBF as kernel
-from FGPGM.FGPGM import FGPGM
+from fgpgm.Experiments.LotkaVolterra import LotkaVolterra as exp
+from fgpgm.Kernels.RBF import RBF as kernel
+from fgpgm.FGPGM import FGPGM
 
 from matplotlib import pyplot as plt
-plt.switch_backend('agg')
+# plt.switch_backend('agg')
 
 """determine standardization"""
 standardize = np.loadtxt("standardize.csv")
@@ -70,9 +70,10 @@ newStates, newParams = FM.getFGPGMResults(GPPosteriorInit=True,
                                           debug=True,
                                           theta0=theta0,
                                           thetaMagnitudes=np.zeros_like(theta0),
-                                          nSamples=300000,
+                                          nSamples=100000,
                                           nBurnin=1000,
-                                          propStds=propStds)
+                                          propStds=propStds,
+                                          printEvery=1000)
 np.savetxt("optimalParamsFGPGM.csv", newParams)
 np.savetxt("optimalStatesFGPGM.csv", newStates)
 print(newParams)

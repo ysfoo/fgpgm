@@ -5,7 +5,7 @@ Creates and saves all the files used later.
 Must be run from a folder where the output should be saved.
 """
 import numpy as np
-from FGPGM.Experiments.ProteinTransduction import ProteinTransduction as PT
+from fgpgm.Experiments.ProteinTransduction import ProteinTransduction as PT
 
 from matplotlib import pyplot as plt
 plt.switch_backend('agg')

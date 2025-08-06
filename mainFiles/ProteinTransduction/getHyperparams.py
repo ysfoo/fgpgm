@@ -5,7 +5,7 @@ Creates and saves all the hyperparameters needed by doFGPGM.py. Should only
 be run after the experiment has been created using createExperiments.py.
 """
 import numpy as np
-from FGPGM.Kernels.Sigmoid import Sigmoid
+from fgpgm.Kernels.Sigmoid import Sigmoid
 import os
 
 from matplotlib import pyplot as plt
@@ -46,3 +46,4 @@ for state in np.arange(y.shape[1]):
                currentKernel.theta)
     np.savetxt("hyperparams/sigma{}.csv".format(state),
                np.asarray(currentKernel.sigma).reshape([1, 1]))
+

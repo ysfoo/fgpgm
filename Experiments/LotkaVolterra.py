@@ -37,3 +37,4 @@ class LotkaVolterra(Experiment):
             xmin.append(0)
             xmax.append(100)
         return xmin, xmax
+

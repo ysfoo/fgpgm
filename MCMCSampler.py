@@ -7,7 +7,7 @@ import numpy as np
 from scipy.stats import norm
 
 def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
-                   nSamples, nBurnin):
+                   nSamples, nBurnin, printEvery=None):
     """
     Creates MCMC samples respecting boundaries provided by the experiment.
     Uses zero mean Gaussian distributions as proposal.
@@ -40,14 +40,18 @@ def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
     allSamples = []
     xNew = xInit.copy()
     logPNew = logTarget(xInit)
-    allSamples.append(xNew)
+    # allSamples.append(xNew)
     nAccepted=np.zeros_like(xInit)
     nRejected=np.zeros_like(xInit)
     for i in np.arange(nSamples+nBurnin):
-        currSamples = []
+        if printEvery is not None:
+            if (i+1) % printEvery == 0:
+                print(f"iteration {i+1} out of {nSamples+nBurnin}")
+
+        # currSamples = []
         for dim in range(xInit.size):
             # save state and probability of previous iteration
-            xOld = xNew.copy()
+            xOld = xNew#.copy()
             logPOld = logPNew
             # create new state
             proposal = getProposal(mean=xOld[dim],
@@ -91,8 +95,9 @@ def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
                 logPNew = logPOld
                 nRejected[dim] += 1
                 pass
-            currSamples.append(xNew)
-        allSamples.append(np.mean(currSamples, axis=0))
+            # currSamples.append(xNew)
+        # allSamples.append(np.mean(currSamples, axis=0))
+        allSamples.append(xNew)
     
     return np.asarray(allSamples[nBurnin:]), nAccepted, nRejected
 
@@ -116,3 +121,4 @@ def getValidProbability(mean, std, lowerBound, upperBound):
     """
     return norm.cdf(upperBound, loc=mean, scale=std) \
          - norm.cdf(lowerBound, loc=mean, scale=std)
+

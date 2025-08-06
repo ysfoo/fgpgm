@@ -8,7 +8,11 @@ import numpy as np
 from scipy.optimize import basinhopping
 from .Optimizer.RandomDisplacement import RandomDisplacement
 
-from scipy.misc import derivative
+from scipy.optimize import approx_fprime
+def derivative(fn, x, dx):
+    return approx_fprime(x, fn, dx)
+
+# from scipy.misc import derivative
 
 class Kernel(object):
     def __init__(self, theta=None, sigma=None, nugget=1e-4):
@@ -191,9 +195,9 @@ class Kernel(object):
             sigma0 = 1e-3
         def printAcceptance(x, f, accept):
             if accept:
-                print("YES: {} @ {}".format(f, x))
+                print(("YES: {} @ {}".format(f, x)))
             else:
-                print("Nope: {} @ {}".format(f, x))
+                print(("Nope: {} @ {}".format(f, x)))
         
         if not anneal:            
             minimum = basinhopping(negLogLikelihood, x0, T=T,
@@ -216,9 +220,9 @@ class Kernel(object):
                 )
             minimum = minimums[-1]
             for i in np.arange(len(minimums)):
-                print(minimums[i].x)
+                print((minimums[i].x))
         print("Kernel optimization output: ")
-        print minimum
+        print(minimum)
         print("\n")
         optVector = minimum.x
         self.theta = optVector[:-1]
@@ -226,7 +230,7 @@ class Kernel(object):
         # check for positive semidefinite
         C = self.getCPhi(time)
         minEigenvalue = np.min(np.linalg.eig(C)[0])
-        print("minimum eigenvalue = {}".format(minEigenvalue))
+        print(("minimum eigenvalue = {}".format(minEigenvalue)))
         if (minEigenvalue < 1e-5):
             print("\n\nRECOMMENDATION: USE BIGGER NUGGET\n\n")
         C = C + (self.sigma**2)*np.eye(C.shape[0])
@@ -328,13 +332,13 @@ class Kernel(object):
             raise TypeError(
                 "theta is currently None. Please initialize with appropriate values")
         if verbose:
-            print("current theta: {}".format(self.theta))
+            print(("current theta: {}".format(self.theta)))
         if self.sigma is None:
             raise TypeError(
                 "sigma is currently None. Please initialize with appropriate value.")
         if verbose:
-            print("current sigma: {}".format(self.sigma))
-            print("current nugget: {}".format(self.nugget))
+            print(("current sigma: {}".format(self.sigma)))
+            print(("current nugget: {}".format(self.nugget)))
 
         "check for symmetry"
         if verbose:
@@ -343,7 +347,7 @@ class Kernel(object):
             times = np.abs(3*(np.random.randn(2)))
             if not np.allclose(self.k(times[0], times[1]), 
                                self.k(times[1], times[0])):
-                raise StandardError(
+                raise Exception(
                     "kernel function is not symmetfic for times {}, {}".format(
                         times[0], times[1]))
         if verbose:
@@ -352,7 +356,7 @@ class Kernel(object):
         "Numerical derivative check"
         if verbose:
             print("\nStart derivative testing")
-            print("spacing: {}".format(dt))
+            print(("spacing: {}".format(dt)))
 
         def getNumCDash(time1, time2):
             def func(t2):
@@ -375,7 +379,7 @@ class Kernel(object):
             kernelCDash = self.CDash(times[0], times[1])
             numCDash = getNumCDash(times[0], times[1])
             if not np.allclose(kernelCDash, numCDash, rtol=tol):
-                raise StandardError(
+                raise Exception(
                     "implemented CDash does not agree with numerical test for" + 
                     " times\n{}, {}\nwith values\n{} != {}".format(
                         times[0], times[1], kernelCDash, numCDash)
@@ -384,7 +388,7 @@ class Kernel(object):
             kernelDashC = self.DashC(times[0], times[1])
             numDashC = getNumDashC(times[0], times[1])
             if not np.allclose(kernelDashC, numDashC, rtol=tol):
-                raise StandardError(
+                raise Exception(
                     "implemented DashC does not agree with numerical test for" +
                     " times\n{}, {}\nwith values\n{} != {}".format(
                         times[0], times[1], kernelDashC, numDashC)
@@ -393,7 +397,7 @@ class Kernel(object):
             kernelCDD = self.CDoubleDash(times[0], times[1])
             numCDD = getNumCDD(times[0], times[1])
             if not np.allclose(kernelCDD, numCDD, rtol=tol):
-                raise StandardError(
+                raise Exception(
                     "implemented CDoubleDash does not agree with numerical" +
                     " test for times\n{}, {}\n with values {} != {}".format(
                         times[0], times[1], kernelCDD, numCDD)

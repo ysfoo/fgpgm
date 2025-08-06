@@ -6,9 +6,9 @@ this script can be run to infer the ODE parameters using FGPGM.
 """
 import numpy as np
 
-from FGPGM.Experiments.ProteinTransduction import ProteinTransduction as exp
-from FGPGM.Kernels.Sigmoid import Sigmoid as kernel
-from FGPGM.FGPGM import FGPGM
+from fgpgm.Experiments.ProteinTransduction import ProteinTransduction as exp
+from fgpgm.Kernels.Sigmoid import Sigmoid as kernel
+from fgpgm.FGPGM import FGPGM
 
 from matplotlib import pyplot as plt
 plt.switch_backend('agg')

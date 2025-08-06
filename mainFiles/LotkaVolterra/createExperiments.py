@@ -5,13 +5,19 @@ Creates and saves all the files used later.
 Must be run from a folder where the output should be saved.
 """
 import numpy as np
-from FGPGM.Experiments.LotkaVolterra import LotkaVolterra as LV
+from fgpgm.Experiments.LotkaVolterra import LotkaVolterra as LV
+
+import sys
 
 from matplotlib import pyplot as plt
 plt.switch_backend('agg')
 
 """seed random number generator and save the seed for reproducability"""
-seed = np.random.randint(0, 2**32-1)
+if len(sys.argv) >= 2:
+    seed = int(sys.argv[1])
+else:     
+    seed = np.random.randint(0, 2**32-1)
+
 np.random.seed(seed)
 np.savetxt("seed.csv", np.asarray(seed).reshape([1, 1]))
 

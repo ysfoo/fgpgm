@@ -6,7 +6,7 @@ Must be run from the testRun{}.format{i} directories.
 """
 
 import numpy as np
-from FGPGM.Experiments.FitzHughNagumo import FHN
+from fgpgm.Experiments.FitzHughNagumo import FHN
 
 from matplotlib import pyplot as plt
 plt.switch_backend('agg')
@@ -47,3 +47,4 @@ x, y = experiment.sampleTrajectoryNonUniform(XInit, theta, time, obsNoiseStd=Non
 
 np.savetxt("trueStates.csv", x)
 np.savetxt("observations.csv", y)
+
