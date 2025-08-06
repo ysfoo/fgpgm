@@ -72,8 +72,7 @@ newStates, newParams = FM.getFGPGMResults(GPPosteriorInit=True,
                                           thetaMagnitudes=np.zeros_like(theta0),
                                           nSamples=100000,
                                           nBurnin=1000,
-                                          propStds=propStds,
-                                          printEvery=1000)
+                                          propStds=propStds)
 np.savetxt("optimalParamsFGPGM.csv", newParams)
 np.savetxt("optimalStatesFGPGM.csv", newStates)
 print(newParams)

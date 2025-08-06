@@ -44,13 +44,13 @@ def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
     # allSamples.append(xNew)
     nAccepted=np.zeros_like(xInit)
     nRejected=np.zeros_like(xInit)
-    for i in np.arange(nSamples+nBurnin):
+    for i in tqdm(np.arange(nSamples+nBurnin), mininterval=1):
         if printEvery is not None:
             if (i+1) % printEvery == 0:
                 print(f"iteration {i+1} out of {nSamples+nBurnin}")
 
         # currSamples = []
-        for dim in tqdm(range(xInit.size), mininterval=1):
+        for dim in range(xInit.size):
             # save state and probability of previous iteration
             xOld = xNew#.copy()
             logPOld = logPNew
