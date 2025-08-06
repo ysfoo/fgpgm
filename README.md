@@ -1,7 +1,9 @@
 # Fast Gaussian Process Based Gradient Matching
 
-Implementation of FGPGM in python 2.7, based on the paper "Fast Gaussian Process Based Gradient Matching for Parameter Identification in Systems of Nonlinear ODEs" by Philippe Wenk, Alkis Gotovos, Stefan Bauer, Nico Gorbach, Andreas Krause and Joachim M. Buhmann. If you use this code for further research, please consider citing our paper (http://arxiv.org/abs/1804.04378
-).
+This is a modified implementation of FGPGM, based on the paper "Fast Gaussian Process Based Gradient Matching for Parameter Identification in Systems of Nonlinear ODEs" by Philippe Wenk, Alkis Gotovos, Stefan Bauer, Nico Gorbach, Andreas Krause and Joachim M. Buhmann. If you use this code for further research, please consider citing our paper (http://arxiv.org/abs/1804.04378
+). The original implementation is in Python 2.7, the modified implementation is in Python 3.13, modified by Yong See Foo. 
+
+The MCMC scheme is a Metropolis-within-Gibbs algorithm, where each Metropolis-Hastings proposal is a Gaussian random walk proposal. The original implementation appends the mean of the Gibbs updates each Gibbs cycle to the trace, which is unorthodox. The modified implementation appends instead the final state of each Gibbs cycle to the trace. 
 
 ## Out of the Box Experiments
 
