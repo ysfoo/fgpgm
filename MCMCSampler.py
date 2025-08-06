@@ -5,6 +5,7 @@ Class implementing the MCMC sampling scheme used for FGPGM.
 """
 import numpy as np
 from scipy.stats import norm
+from tqdm import tqdm
 
 def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
                    nSamples, nBurnin, printEvery=None):
@@ -49,7 +50,7 @@ def MCMCWithBounds(logTarget, xInit, proposalStds, lowerBounds, upperBounds,
                 print(f"iteration {i+1} out of {nSamples+nBurnin}")
 
         # currSamples = []
-        for dim in range(xInit.size):
+        for dim in tqdm(range(xInit.size), mininterval=1):
             # save state and probability of previous iteration
             xOld = xNew#.copy()
             logPOld = logPNew
