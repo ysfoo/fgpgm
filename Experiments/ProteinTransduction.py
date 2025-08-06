@@ -55,3 +55,4 @@ class ProteinTransduction(Experiment):
             xmax.append(4)
 
         return xmin, xmax
+

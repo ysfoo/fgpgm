@@ -11,10 +11,10 @@ useMagnitudes = False
 
 import numpy as np
 
-from FGPGM.Experiments.FitzHughNagumo import FHN as exp
-from FGPGM.Kernels.Matern52 import Matern52 as kernel
+from fgpgm.Experiments.FitzHughNagumo import FHN as exp
+from fgpgm.Kernels.Matern52 import Matern52 as kernel
 
-from FGPGM.FGPGM import FGPGM
+from fgpgm.FGPGM import FGPGM
 
 """determine standardization"""
 standardize = np.loadtxt("standardize.csv")

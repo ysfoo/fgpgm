@@ -148,3 +148,4 @@ class Sigmoid(Kernel):
         thirdSummand = -b*time1/(a + b*time1**2 + 1) * \
                        self._getDZDt2(time1, time2)
         return firstSummand + secondSummand + thirdSummand
+

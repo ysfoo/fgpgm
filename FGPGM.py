@@ -5,10 +5,10 @@ Main class implementing the FGPGM algorithm.
 """
 import numpy as np
 
-from .DensityCalculation import getAs, getDs, getLambdaStars, \
+from fgpgm.DensityCalculation import getAs, getDs, getLambdaStars, \
      calculateLogDensity
 
-from .MCMCSampler import MCMCWithBounds
+from fgpgm.MCMCSampler import MCMCWithBounds
 
 
 class FGPGM(object):
@@ -126,7 +126,7 @@ class FGPGM(object):
 
     def getFGPGMResults(self, GPPosteriorInit=True, blockNegStates=False,
                         debug=False, theta0=None, thetaMagnitudes=None,
-                        nSamples=100000, nBurnin=5000, propStds=None):
+                        nSamples=100000, nBurnin=5000, propStds=None, printEvery=None):
         """
         Calculates the optimal ODE parameters and states using the FGPGM
         algorithm
@@ -213,17 +213,17 @@ class FGPGM(object):
             np.savetxt("GPPosteriorInit.csv", x0[:fullMean.size])
             np.savetxt("stdMatrix.csv", stdMatrix)
             np.savetxt("meanMatrix.csv", meanMatrix)
-            if debug:
-                from matplotlib import pyplot as plt
-                plt.figure()
-                plt.scatter(np.arange(stdY.size),
-                            x0[:fullMean.size], marker='x')
-                plt.scatter(np.arange(stdY.size),
-                         stdY.reshape([-1, 1], order='F'), marker = '.')
-                plt.legend(['GPPosterior', 'observations'])
-                plt.savefig("./PosteriorInit.png")
-                plt.show()
-                plt.close()
+            # if debug:
+            #     from matplotlib import pyplot as plt
+            #     plt.figure()
+            #     plt.scatter(np.arange(stdY.size),
+            #                 x0[:fullMean.size], marker='x')
+            #     plt.scatter(np.arange(stdY.size),
+            #              stdY.reshape([-1, 1], order='F'), marker = '.')
+            #     plt.legend(['GPPosterior', 'observations'])
+            #     plt.savefig("./PosteriorInit.png")
+            #     plt.show()
+            #     plt.close()
         else:
             print("initialize states with observations")
             flatObs = np.squeeze(self.y.reshape([-1, 1]), order='F')
@@ -242,7 +242,7 @@ class FGPGM(object):
                     xmin[i] = newZeros[i]
                     blockCount += 1
             if debug:
-                print("FGPGM blocked {} potentially negative states".format(blockCount))
+                print(("FGPGM blocked {} potentially negative states".format(blockCount)))
 
         bounds = [(low, high) for low, high in zip(xmin, xmax)]
 
@@ -253,9 +253,9 @@ class FGPGM(object):
                 x0[i] = bounds[i][0] + bounds[i][1]*1e-5
                 initCorrCount += 1
             if x0[i] > bounds[i][1]:
-                print("x0[{}] too big".format(i))
+                print(("x0[{}] too big".format(i)))
         
-        print("{} states needed correction, as they were too close to zero".format(initCorrCount))
+        print(("{} states needed correction, as they were too close to zero".format(initCorrCount)))
 
         if propStds is None:
             print("using standard proposal stds")
@@ -269,7 +269,8 @@ class FGPGM(object):
             lowerBounds=xmin,
             upperBounds=xmax,
             nSamples=nSamples,
-            nBurnin=nBurnin)
+            nBurnin=nBurnin,
+            printEvery=printEvery)
         inferredStuff = np.mean(MCMCSamples, axis=0)
 
         newStates = inferredStuff[:-self.nODEParams].reshape(
@@ -279,19 +280,21 @@ class FGPGM(object):
 
         newParams = inferredStuff[-self.nODEParams:]*(10**thetaMagnitudes)
 
-        stateAccepted = np.asarray(nAccepted[:-self.nODEParams], dtype=np.float)
+        stateAccepted = np.asarray(nAccepted[:-self.nODEParams])
         stateRejected = nRejected[:-self.nODEParams]
-        paramAccepted = np.asarray(nAccepted[-self.nODEParams:], dtype=np.float)
+        paramAccepted = np.asarray(nAccepted[-self.nODEParams:])
         paramRejected = nRejected[-self.nODEParams:]
         stateRatio = stateAccepted / (stateRejected + stateAccepted)
         paramRatio = paramAccepted / (paramRejected + paramAccepted)
-        print("\nstate acceptance mean with std: \n{} +- {}".format(
-            np.mean(stateRatio), np.std(stateRatio)))
-        print("\nstate acceptance range: \n{} to {}".format(
-            np.min(stateRatio), np.max(stateRatio)))
-        print("\nparam acceptance mean with std: \n{} +- {}".format(
-            np.mean(paramRatio), np.std(paramRatio)))
-        print("\nparam acceptance range: \n{} to {}".format(
-            np.min(paramRatio), np.max(paramRatio)))
+        print(("\nstate acceptance mean with std: \n{} +- {}".format(
+            np.mean(stateRatio), np.std(stateRatio))))
+        print(("\nstate acceptance range: \n{} to {}".format(
+            np.min(stateRatio), np.max(stateRatio))))
+        print(("\nparam acceptance mean with std: \n{} +- {}".format(
+            np.mean(paramRatio), np.std(paramRatio))))
+        print(("\nparam acceptance range: \n{} to {}".format(
+            np.min(paramRatio), np.max(paramRatio))))
+
+        np.savez_compressed("MCMCSamples.npz", MCMCSamples=MCMCSamples)
 
         return newStates, newParams

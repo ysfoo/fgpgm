@@ -6,7 +6,7 @@ Must be run from the testRun{}.format{i} directories.
 """
 
 import numpy as np
-from FGPGM.Kernels.Matern52 import Matern52
+from fgpgm.Kernels.Matern52 import Matern52
 import os
 
 standardize = True
@@ -51,3 +51,4 @@ for state in np.arange(y.shape[1]):
                currentKernel.theta)
     np.savetxt("hyperparams/sigma{}.csv".format(state),
                np.asarray(currentKernel.sigma).reshape([1, 1]))
+

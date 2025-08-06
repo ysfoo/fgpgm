@@ -5,7 +5,7 @@ Creates and saves all the hyperparameters needed by doFGPGM.py. Should only
 be run after the experiment has been created using createExperiments.py.
 """
 import numpy as np
-from FGPGM.Kernels.RBF import RBF
+from fgpgm.Kernels.RBF import RBF
 import os
 
 from matplotlib import pyplot as plt
@@ -45,3 +45,4 @@ np.savetxt("hyperparams/theta.csv",
            kernel.theta)
 np.savetxt("hyperparams/sigma.csv",
            np.asarray(kernel.sigma).reshape([1, 1]))
+
